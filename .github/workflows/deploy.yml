@@ -26,6 +26,12 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
+    - name: Create appsettings.json from template
+      run: |
+        sed -e "s|__JWT_SECRET__|${{ secrets.JWT_SECRET }}|g" \
+            -e "s|__DB_CONNECTION__|${{ secrets.DB_CONNECTION }}|g" \
+            TorahBackend/TorahBackend/appsettings.template.json > TorahBackend/TorahBackend/appsettings.json
+
     - name: Publish
       run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
 
