@@ -30,7 +30,7 @@ jobs:
       run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
 
     - name: Copy files to Linode via rsync
-      uses: appleboy/rsync-deploy@v1
+      uses: appleboy/rsync-deploy@master
       with:
         host: ${{ secrets.LINODE_HOST }}
         username: ${{ secrets.LINODE_USERNAME }}
