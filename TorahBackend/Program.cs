@@ -103,6 +103,15 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials(); // Si usas cookies o Authorization headers
     });
+
+    options.AddPolicy("AllowDynamicOrigins", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(_ => true) // Permite cualquier origen, evaluado dinámicamente
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Ahora sí se permite
+    });
 });
 
 builder.WebHost.UseUrls("http://10.0.1.2:5000");
@@ -126,7 +135,8 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Use CORS
-app.UseCors("AllowReactApp");
+//app.UseCors("AllowReactApp");
+app.UseCors("AllowDynamicOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
