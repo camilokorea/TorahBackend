@@ -56,6 +56,15 @@ jobs:
     - name: Add host to known_hosts
       run: ssh-keyscan -p 22 -H "${{ secrets.LINODE_HOST }}" >> ~/.ssh/known_hosts
 
+    - name: Stop application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.LINODE_HOST }}
+        username: ${{ secrets.LINODE_USERNAME }}
+        key: ${{ secrets.LINODE_SSH_KEY }}
+        port: 22
+        script: pm2 stop bibliaapi.comunidadmenorah.com || true
+
     - name: Copy files via scp
       run: scp -r -i ~/.ssh/id_rsa ./publish/* ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:${{ secrets.DEPLOY_PATH }}
 
