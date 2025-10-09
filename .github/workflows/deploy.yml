@@ -29,15 +29,17 @@ jobs:
     - name: Publish
       run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
 
-    - name: Copy files to Linode via rsync
-      uses: appleboy/rsync-deploy@master
-      with:
-        host: ${{ secrets.LINODE_HOST }}
-        username: ${{ secrets.LINODE_USERNAME }}
-        key: ${{ secrets.LINODE_SSH_KEY }}
-        port: 22
-        source: "publish/"
-        target: "${{ secrets.DEPLOY_PATH }}"
+    - name: Install SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Add host to known_hosts
+      run: ssh-keyscan -p 22 -H "${{ secrets.LINODE_HOST }}" >> ~/.ssh/known_hosts
+
+    - name: Copy files via scp
+      run: scp -r -i ~/.ssh/id_rsa ./publish/* ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:${{ secrets.DEPLOY_PATH }}
 
     - name: Deploy to Linode
       uses: appleboy/ssh-action@master
