@@ -2,6 +2,7 @@
 name: Deploy TorahBackend to Linode
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
