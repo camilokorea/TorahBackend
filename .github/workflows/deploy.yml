@@ -26,11 +26,17 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
-    - name: Create appsettings.json from template
+    - name: Verify template exists
+      run: |
+        test -f TorahBackend/TorahBackend.WebApi/appsettings.template.json \
+          || (echo "Missing template at TorahBackend/TorahBackend.WebApi/appsettings.template.json" && exit 1)
+
+    - name: Create appsettings.json into publish folder
       run: |
         sed -e "s|__JWT_SECRET__|${{ secrets.JWT_SECRET }}|g" \
             -e "s|__DB_CONNECTION__|${{ secrets.DB_CONNECTION }}|g" \
-            TorahBackend/TorahBackend/appsettings.template.json > TorahBackend/TorahBackend/appsettings.json
+            TorahBackend/TorahBackend.WebApi/appsettings.template.json \
+            > ./publish/appsettings.json
 
     - name: Publish
       run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
