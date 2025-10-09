@@ -26,6 +26,9 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
+    - name: Publish
+      run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
+
     - name: Verify template exists
       run: |
         test -f TorahBackend/appsettings.template.json \
@@ -37,9 +40,6 @@ jobs:
             -e "s|__DB_CONNECTION__|${{ secrets.DB_CONNECTION }}|g" \
             TorahBackend/appsettings.template.json \
             > ./publish/appsettings.json
-
-    - name: Publish
-      run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
 
     - name: Install SSH key
       run: |
