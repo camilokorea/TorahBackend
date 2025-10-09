@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.LINODE_USERNAME }}
         key: ${{ secrets.LINODE_SSH_KEY }}
         port: 22
-        source: "./publish/*"
+        source: "./publish/"
         target: "${{ secrets.DEPLOY_PATH }}"
 
     - name: Deploy to Linode
