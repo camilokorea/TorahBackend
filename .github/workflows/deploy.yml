@@ -28,14 +28,14 @@ jobs:
 
     - name: Verify template exists
       run: |
-        test -f TorahBackend/TorahBackend/appsettings.template.json \
-          || (echo "Missing template at TorahBackend/TorahBackend/appsettings.template.json" && exit 1)
+        test -f TorahBackend/appsettings.template.json \
+          || (echo "Missing template at TorahBackend/appsettings.template.json" && exit 1)
 
     - name: Create appsettings.json into publish folder
       run: |
         sed -e "s|__JWT_SECRET__|${{ secrets.JWT_SECRET }}|g" \
             -e "s|__DB_CONNECTION__|${{ secrets.DB_CONNECTION }}|g" \
-            TorahBackend/TorahBackend/appsettings.template.json \
+            TorahBackend/appsettings.template.json \
             > ./publish/appsettings.json
 
     - name: Publish
