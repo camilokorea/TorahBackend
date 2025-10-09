@@ -29,14 +29,14 @@ jobs:
     - name: Publish
       run: dotnet publish TorahBackend/TorahBackend.WebApi.csproj --configuration Release --output ./publish
 
-    - name: Copy files to Linode
-      uses: appleboy/scp-action@master
+    - name: Copy files to Linode via rsync
+      uses: appleboy/rsync-deploy@v1
       with:
         host: ${{ secrets.LINODE_HOST }}
         username: ${{ secrets.LINODE_USERNAME }}
         key: ${{ secrets.LINODE_SSH_KEY }}
         port: 22
-        source: "publish/."
+        source: "publish/"
         target: "${{ secrets.DEPLOY_PATH }}"
 
     - name: Deploy to Linode
