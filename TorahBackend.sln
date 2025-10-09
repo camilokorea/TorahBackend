@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorahBackend.WebApi", "TorahBackend\TorahBackend.WebApi.csproj", "{91EA1EC8-E7A5-40D4-84F4-33CDE1F809C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE} = {5519CB7E-2090-458B-846A-028DFC3F7BCE}
+		{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F} = {7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorahBackend.Infrastructure", "TorahBackend.Infrastructure\TorahBackend.Infrastructure.csproj", "{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE} = {1813F0BA-CC62-43B1-B765-E901FC5EE8AE}
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE} = {5519CB7E-2090-458B-846A-028DFC3F7BCE}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorahBackend.Domain", "TorahBackend.Domain\TorahBackend.Domain.csproj", "{1813F0BA-CC62-43B1-B765-E901FC5EE8AE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorahBackend.Application", "TorahBackend.Application\TorahBackend.Application.csproj", "{5519CB7E-2090-458B-846A-028DFC3F7BCE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE} = {1813F0BA-CC62-43B1-B765-E901FC5EE8AE}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{BA40B81D-8333-414C-BC00-3EBCB467768F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91EA1EC8-E7A5-40D4-84F4-33CDE1F809C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91EA1EC8-E7A5-40D4-84F4-33CDE1F809C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91EA1EC8-E7A5-40D4-84F4-33CDE1F809C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91EA1EC8-E7A5-40D4-84F4-33CDE1F809C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BFCCA52-FAA0-43FC-BAD5-16FC98906F3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1813F0BA-CC62-43B1-B765-E901FC5EE8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5519CB7E-2090-458B-846A-028DFC3F7BCE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6EAA0FB4-AE53-491A-9728-BD225B6D94B4}
+	EndGlobalSection
+EndGlobal

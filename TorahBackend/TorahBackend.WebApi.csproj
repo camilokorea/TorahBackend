@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="DataSeed\torah.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DataSeed\torah.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Cors" Version="5.3.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TorahBackend.Application\TorahBackend.Application.csproj" />
+    <ProjectReference Include="..\TorahBackend.Infrastructure\TorahBackend.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
