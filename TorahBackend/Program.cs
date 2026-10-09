@@ -114,7 +114,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.WebHost.UseUrls("http://10.0.1.2:5000");
+// ListenUrls permite correr otra instancia (ej. test) en otro puerto; sin valor usa la de produccion.
+builder.WebHost.UseUrls(builder.Configuration["ListenUrls"] ?? "http://10.0.1.2:5000");
 
 // Agregar autenticación JWT
 builder.Services.AddAuthentication("Bearer")

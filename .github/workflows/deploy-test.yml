@@ -1,0 +1,83 @@
+name: Deploy TorahBackend TEST to Linode
+
+# Ambiente de pruebas: https://test.bibliaapi.ministeriomenorah.com
+# La configuracion (appsettings.json con Mongo de pruebas y ListenUrls :5001) vive en el
+# servidor y NO se sobrescribe aqui; solo se copian los binarios.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test
+
+env:
+  TEST_PATH: /APPS/test.bibliaapi.ministeriomenorah.com
+  PM2_NAME: test.bibliaapi.ministeriomenorah.com
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Publish (self-contained linux-x64)
+      run: |
+        dotnet publish TorahBackend/TorahBackend.WebApi.csproj \
+          --configuration Release \
+          --output ./publish \
+          -r linux-x64 \
+          --self-contained true \
+          /p:PublishTrimmed=false
+
+    - name: Remove appsettings from publish (server keeps its own)
+      run: rm -f ./publish/appsettings*.json
+
+    - name: Install SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.LINODE_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Add host to known_hosts
+      run: ssh-keyscan -p 22 -H "${{ secrets.LINODE_HOST }}" >> ~/.ssh/known_hosts
+
+    - name: Stop application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.LINODE_HOST }}
+        username: ${{ secrets.LINODE_USERNAME }}
+        key: ${{ secrets.LINODE_SSH_KEY }}
+        port: 22
+        script: |
+          mkdir -p ${{ env.TEST_PATH }}
+          pm2 stop ${{ env.PM2_NAME }} || true
+
+    - name: Copy files via scp
+      run: scp -r -i ~/.ssh/id_rsa ./publish/* ${{ secrets.LINODE_USERNAME }}@${{ secrets.LINODE_HOST }}:${{ env.TEST_PATH }}
+
+    - name: Start application
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.LINODE_HOST }}
+        username: ${{ secrets.LINODE_USERNAME }}
+        key: ${{ secrets.LINODE_SSH_KEY }}
+        port: 22
+        script: |
+          cd ${{ env.TEST_PATH }}
+          test -f appsettings.json || { echo "Falta appsettings.json de pruebas en el servidor"; exit 1; }
+          chmod +x TorahBackend.WebApi
+          pm2 restart ${{ env.PM2_NAME }} || pm2 start ./TorahBackend.WebApi --name ${{ env.PM2_NAME }} --cwd ${{ env.TEST_PATH }}
+          pm2 save
