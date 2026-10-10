@@ -36,6 +36,12 @@ var glosarioService = new GlosarioService(dataRepository, versionControladorServ
 
 var dedicatoriaService = new DedicatoriaService(dataRepository, versionControladorService);
 
+var estudioRepository = new EstudioRepository(connectionString);
+
+var imagenRepository = new ImagenRepository(connectionString);
+
+var estudioService = new EstudioService(estudioRepository, imagenRepository);
+
 builder.Services.AddSingleton<IDataRepository>(provider => dataRepository);
 
 builder.Services.AddSingleton<IUsuarioService>(provider => usuarioService);
@@ -49,6 +55,12 @@ builder.Services.AddSingleton<IDedicatoriaService>(provider => dedicatoriaServic
 builder.Services.AddSingleton<IVersionControladorService>(provider => versionControladorService);
 
 builder.Services.AddSingleton<ITorahJsonRepository>(provider => torahJsonRepository);
+
+builder.Services.AddSingleton<IEstudioRepository>(provider => estudioRepository);
+
+builder.Services.AddSingleton<IImagenRepository>(provider => imagenRepository);
+
+builder.Services.AddSingleton<IEstudioService>(provider => estudioService);
 
 // data seed initial torah data
 await dataRepository.DataSeed();

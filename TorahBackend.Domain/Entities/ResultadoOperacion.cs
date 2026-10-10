@@ -6,6 +6,8 @@ namespace TorahBackend.Domain.Entities
         NoEncontrado,
         PosicionInvalida,
         // El capítulo cambió desde que se leyó (otra edición en paralelo).
-        Conflicto
+        Conflicto,
+        // Los datos enviados no son válidos (el mensaje explica por qué).
+        Invalido
     }
 }
