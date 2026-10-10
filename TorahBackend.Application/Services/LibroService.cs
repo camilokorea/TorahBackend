@@ -193,5 +193,19 @@ namespace TorahBackend.Application.Services
                 throw;
             }
         }
+
+        public async Task<ResultadoOperacion> InsertarVersiculo(string? id, int capituloNumero, int posicion, string versiculo)
+        {
+            var resultado = await _dataRepository.InsertVersiculoLibro(id, capituloNumero, posicion, versiculo);
+            if (resultado == ResultadoOperacion.Ok) await _versionControladorService.IncrementarVersion();
+            return resultado;
+        }
+
+        public async Task<ResultadoOperacion> EliminarVersiculo(string? id, int capituloNumero, int posicion, string versiculoActual)
+        {
+            var resultado = await _dataRepository.DeleteVersiculoLibro(id, capituloNumero, posicion, versiculoActual);
+            if (resultado == ResultadoOperacion.Ok) await _versionControladorService.IncrementarVersion();
+            return resultado;
+        }
     }
 }

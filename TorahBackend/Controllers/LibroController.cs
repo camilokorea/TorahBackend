@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TorahBackend.Application.DTO;
 using TorahBackend.Application.Interfaces;
+using TorahBackend.Domain.Entities;
 
 namespace TorahBackend.WebApi.Controllers
 {
@@ -70,5 +71,35 @@ namespace TorahBackend.WebApi.Controllers
             await _libroService.ActualizarVersiculo(payload.Id, payload.CapituloNumero, payload.VersiculoNumero, payload.Versiculo);
             return Ok(true);
         }
+
+        [Authorize]
+        [HttpPost("insertar/versiculo")]
+        public async Task<IActionResult> InsertarVersiculo([FromBody] LibroVersiculoPosicion payload)
+        {
+            if (string.IsNullOrWhiteSpace(payload?.Versiculo))
+                return BadRequest(new { message = "El texto del versículo no puede estar vacío." });
+
+            var resultado = await _libroService.InsertarVersiculo(payload.Id, payload.CapituloNumero, payload.Posicion, payload.Versiculo.Trim());
+            return Respuesta(resultado);
+        }
+
+        [Authorize]
+        [HttpPost("eliminar/versiculo")]
+        public async Task<IActionResult> EliminarVersiculo([FromBody] LibroVersiculoPosicion payload)
+        {
+            if (payload == null)
+                return BadRequest(new { message = "Solicitud inválida." });
+
+            var resultado = await _libroService.EliminarVersiculo(payload.Id, payload.CapituloNumero, payload.Posicion, payload.Versiculo ?? string.Empty);
+            return Respuesta(resultado);
+        }
+
+        private IActionResult Respuesta(ResultadoOperacion resultado) => resultado switch
+        {
+            ResultadoOperacion.Ok => Ok(true),
+            ResultadoOperacion.NoEncontrado => NotFound(new { message = "No se encontró el libro o el capítulo." }),
+            ResultadoOperacion.PosicionInvalida => BadRequest(new { message = "La posición del versículo no es válida." }),
+            _ => Conflict(new { message = "El capítulo cambió mientras se editaba. Recarga la página e inténtalo de nuevo." }),
+        };
     }
 }

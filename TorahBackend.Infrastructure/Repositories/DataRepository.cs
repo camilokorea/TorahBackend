@@ -257,6 +257,69 @@ namespace TorahBackend.Infrastructure.Repositories
             }
         }
 
+        // Inserta un versículo en la posición indicada (0 = al inicio del capítulo).
+        public async Task<ResultadoOperacion> InsertVersiculoLibro(string? id, int capituloNumero, int posicion, string versiculo)
+        {
+            return await ModificarVersiculos(id, capituloNumero, versiculos =>
+            {
+                if (posicion < 0 || posicion > versiculos.Count) return ResultadoOperacion.PosicionInvalida;
+                versiculos.Insert(posicion, versiculo);
+                return ResultadoOperacion.Ok;
+            });
+        }
+
+        // Elimina el versículo en la posición indicada, solo si su texto sigue siendo el esperado.
+        public async Task<ResultadoOperacion> DeleteVersiculoLibro(string? id, int capituloNumero, int posicion, string versiculoActual)
+        {
+            return await ModificarVersiculos(id, capituloNumero, versiculos =>
+            {
+                if (posicion < 0 || posicion >= versiculos.Count) return ResultadoOperacion.PosicionInvalida;
+                if (versiculos[posicion] != versiculoActual) return ResultadoOperacion.Conflicto;
+                versiculos.RemoveAt(posicion);
+                return ResultadoOperacion.Ok;
+            });
+        }
+
+        // Lee el capítulo, aplica el cambio y lo guarda solo si nadie lo modificó entretanto
+        // (el filtro exige que el arreglo de versículos siga igual al que se leyó).
+        private async Task<ResultadoOperacion> ModificarVersiculos(string? id, int capituloNumero, Func<List<string>, ResultadoOperacion> cambio)
+        {
+            if (_libroCollection == null || string.IsNullOrEmpty(id) || !ObjectId.TryParse(id, out var objectId))
+                return ResultadoOperacion.NoEncontrado;
+
+            var libro = await _libroCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            var capitulo = libro?.Capitulos.FirstOrDefault(c => c.CapituloNumero == capituloNumero);
+            if (capitulo == null) return ResultadoOperacion.NoEncontrado;
+
+            var originales = capitulo.Versiculos.ToList();
+            var versiculos = capitulo.Versiculos.ToList();
+            var resultado = cambio(versiculos);
+            if (resultado != ResultadoOperacion.Ok) return resultado;
+
+            var filtro = new BsonDocument
+            {
+                { "_id", objectId },
+                { "Capitulos", new BsonDocument("$elemMatch", new BsonDocument
+                    {
+                        { "CapituloNumero", capituloNumero },
+                        { "Versiculos", new BsonArray(originales) }
+                    })
+                }
+            };
+
+            var update = Builders<Libro>.Update.Set("Capitulos.$[capitulo].Versiculos", versiculos);
+            var opciones = new UpdateOptions
+            {
+                ArrayFilters = new[]
+                {
+                    new BsonDocumentArrayFilterDefinition<BsonDocument>(new BsonDocument("capitulo.CapituloNumero", capituloNumero))
+                }
+            };
+
+            var res = await _libroCollection.UpdateOneAsync(filtro, update, opciones);
+            return res.MatchedCount == 1 ? ResultadoOperacion.Ok : ResultadoOperacion.Conflicto;
+        }
+
         public async Task IncremetarVersion()
         {
             try

@@ -1,4 +1,5 @@
 ﻿using TorahBackend.Application.DTO;
+using TorahBackend.Domain.Entities;
 
 namespace TorahBackend.Application.Interfaces
 {
@@ -17,5 +18,9 @@ namespace TorahBackend.Application.Interfaces
         Task ActualizarAbreviatura(string? id, string? abreviatura);
 
         Task ActualizarVersiculo(string? id, int capituloNumero, int versiculoNumero, string? versiculo);
+
+        Task<ResultadoOperacion> InsertarVersiculo(string? id, int capituloNumero, int posicion, string versiculo);
+
+        Task<ResultadoOperacion> EliminarVersiculo(string? id, int capituloNumero, int posicion, string versiculoActual);
     }
 }

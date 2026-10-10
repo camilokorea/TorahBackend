@@ -13,6 +13,8 @@ namespace TorahBackend.Application.Interfaces
         Task UpdateNombreLibro(string? id, string? nombre);
         Task UpdateAbreviaturaLibro(string? id, string? abreviatura);
         Task UpdateVersiculoLibro(string? id, int capituloNumero, int versiculoNumero, string? versiculo);
+        Task<ResultadoOperacion> InsertVersiculoLibro(string? id, int capituloNumero, int posicion, string versiculo);
+        Task<ResultadoOperacion> DeleteVersiculoLibro(string? id, int capituloNumero, int posicion, string versiculoActual);
         Task IncremetarVersion();
         Task<VersionControlador> ObtenerUltimaVersion();
         Task<List<Glosario>> ListGlosario();
